@@ -111,20 +111,22 @@ envGroupSettings = yaml.load(fs.readFileSync(envGroupSettingsPath).toString()),
 
 It also has an inline suppression for `fs.existsSync()`.
 
+The migrated rule is named `n/no-sync`, while these existing comments still name the
+removed core rule `no-sync`. A local lint run already reports the comments on lines 161 and
+411 as unused with the migrated configuration. Disabling `n/no-sync` would not make those
+comments valid again; it would leave the intentional synchronous calls completely unchecked.
+
 With `n/no-sync` disabled for JavaScript files:
 
-1. These comments would no longer suppress an active rule.
-2. Because the shared config enables `reportUnusedDisableDirectives`, the comments could
-   become unused-disable findings.
-3. All other JavaScript files would lose `n/no-sync` coverage, including future code.
-4. The configuration would silently depend on whether a file is JavaScript or TypeScript,
+1. All JavaScript files would lose `n/no-sync` coverage, including future code.
+2. The existing suppression comments would remain stale and unused until they are removed or
+   updated.
+3. The configuration would silently depend on whether a file is JavaScript or TypeScript,
    rather than preserving the same Node rule across both languages.
 
-A local lint simulation confirmed that disabling `n/no-sync` produces unused-disable
-findings at the existing suppression comments on lines 161 and 411 of
-`lib/serverless-plugins/boilerplate.js`. Option 2 could be made to pass by removing or
-changing those suppression comments and accepting that JavaScript files are no longer
-checked, but that would be a functional reduction and is not recommended.
+Option 2 could be made to pass by removing the stale suppression comments and accepting that
+JavaScript files are no longer checked, but that would be a functional reduction and is not
+recommended.
 
 ## Other alternatives considered
 
