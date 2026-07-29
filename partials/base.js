@@ -1,6 +1,34 @@
-const esLintPluginSilvermine = require('../plugin/index'),
+const eslint = require('eslint'),
+      esLintPluginSilvermine = require('../plugin/index'),
       stylistic = require('@stylistic/eslint-plugin'),
-      nodePlugin = require('eslint-plugin-n');
+      nodePlugin = require('eslint-plugin-n'),
+      usesESLint9 = Number.parseInt(eslint.Linter.version, 10) >= 9;
+
+let nodeRules;
+
+if (usesESLint9) {
+   nodeRules = {
+      'n/callback-return': [ 'error', [ 'callback', 'cb', 'next', 'done' ] ],
+      'n/global-require': 'error',
+      'n/handle-callback-err': 'error',
+      'n/no-new-require': 'error',
+      'n/no-path-concat': 'error',
+      'n/no-process-env': 'error',
+      'n/no-process-exit': 'error',
+      'n/no-sync': 'error',
+   };
+} else {
+   nodeRules = {
+      'callback-return': [ 'error', [ 'callback', 'cb', 'next', 'done' ] ],
+      'global-require': 'error',
+      'handle-callback-err': 'error',
+      'no-new-require': 'error',
+      'no-path-concat': 'error',
+      'no-process-env': 'error',
+      'no-process-exit': 'error',
+      'no-sync': 'error',
+   };
+}
 
 module.exports = {
    plugins: {
@@ -115,14 +143,7 @@ module.exports = {
       'no-undef-init': 'error',
       'no-unused-vars': 'error',
       'no-use-before-define': [ 'error', { 'functions': false } ],
-      'n/callback-return': [ 'error', [ 'callback', 'cb', 'next', 'done' ] ],
-      'n/global-require': 'error',
-      'n/handle-callback-err': 'error',
-      'n/no-new-require': 'error',
-      'n/no-path-concat': 'error',
-      'n/no-process-env': 'error',
-      'n/no-process-exit': 'error',
-      'n/no-sync': 'error',
+      ...nodeRules,
       'camelcase': 'error',
       'consistent-this': [ 'error', 'self' ],
       'max-depth': [ 'error', 4 ],
