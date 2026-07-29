@@ -212,6 +212,26 @@ The deps.dev pages require client-side rendering in this environment, so their p
 could not be extracted directly. The npm registry metadata confirms the versions, licenses,
 engine ranges, dependency lists, and package integrity metadata.
 
+## DPS integration test
+
+The fix was pushed and installed in DPS using a combined test branch containing:
+
+   * The Espree parser fix at commit `d688f86`.
+   * The `eslint-plugin-vue@9.33.0` update required by the `vue/no-unused-refs` work.
+
+The focused Vue lint passed with zero violations, including the four components that use
+`useTemplateRef()`.
+
+The focused JavaScript lint no longer crashes on parser services. It instead reports normal
+`n/no-sync` findings for synchronous calls, which confirms that Espree fixes the original
+failure mode.
+
+The full DPS lint currently reports many additional violations because DPS still overrides
+the old core rule names such as `no-process-env` and `global-require`, while the migrated
+configuration exposes `n/no-process-env` and `n/global-require`. Existing suppression comments
+also still name the old rules. Those downstream rule-name and suppression updates are a
+separate integration task; they are not evidence that the Espree parser fix failed.
+
 ## Recommendation
 
 Use Option 1 with `espree@9.6.1`, subject to dependency approval.
